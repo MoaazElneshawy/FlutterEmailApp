@@ -1,5 +1,6 @@
-import 'package:email_app/AppDrawer.dart';
-import 'package:email_app/messagesList.dart';
+import 'package:email_app/Calendar.dart';
+import 'package:email_app/Contacts.dart';
+import 'package:email_app/Inbox.dart';
 import 'package:flutter/material.dart';
 
 class AppRoot extends StatefulWidget {
@@ -8,30 +9,38 @@ class AppRoot extends StatefulWidget {
 }
 
 class _AppRootState extends State<AppRoot> {
+  int bottomBarIndex = 0;
+
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-        length: 2,
-        child: Scaffold(
-          appBar: AppBar(
-            bottom: TabBar(tabs: [
-              Tab(text: 'Local',icon: Icon(Icons.local_activity),),
-              Tab(text: 'Network',icon: Icon(Icons.network_wifi),),
-            ]),
-            title: Text('Email App'),
-            centerTitle: true,
+    return Scaffold(
+      body: [
+        Inbox(),
+        Contacts('Contacts'),
+        Calender("Calendar"),
+      ].elementAt(bottomBarIndex),
+      bottomNavigationBar: BottomNavigationBar(
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.inbox),
+            label: "Inbox",
           ),
-          drawer: AppDrawer(),
-          body: TabBarView(children: [
-            MessagesList(
-              title: 'Local',
-              status: 'local',
-            ),
-            MessagesList(
-              title: 'Network',
-              status: 'network',
-            )
-          ]),
-        ));
+          BottomNavigationBarItem(
+            icon: Icon(Icons.people),
+            label: "Contacts",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.calendar_today),
+            label: "Calendar",
+          ),
+        ],
+        onTap: (index) {
+          setState(() {
+            bottomBarIndex = index;
+          });
+        },
+        currentIndex: bottomBarIndex,
+      ),
+    );
   }
 }
