@@ -16,7 +16,7 @@ class Inbox extends StatelessWidget {
           appBar: AppBar(
             bottom: TabBar(tabs: [
               Tab(
-                text: 'Local',
+                text: 'Important',
                 icon: Icon(Icons.local_activity),
               ),
               Tab(
@@ -30,12 +30,12 @@ class Inbox extends StatelessWidget {
           drawer: AppDrawer(),
           body: TabBarView(children: [
             MessagesList(
-              title: 'Local',
-              status: 'local',
+              title: 'Important',
+              status: 'important',
             ),
             MessagesList(
-              title: 'Network',
-              status: 'network',
+              title: 'Other',
+              status: 'other',
             )
           ]),
         ));

@@ -38,64 +38,7 @@ class _MessagesListState extends State<MessagesList> {
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,
-        body: (this.widget.status == "local")
-            ? ListView.separated(
-                itemBuilder: (context, index) {
-                  Message message = messages[index];
-                  return Dismissible(
-                    direction: DismissDirection.endToStart,
-                    background: Container(
-                      color: Colors.redAccent,
-                      alignment: Alignment.centerRight,
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 20),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.delete,
-                              color: Colors.white,
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              'Delete',
-                              style: TextStyle(color: Colors.white),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                    key: UniqueKey(),
-                    onDismissed: (direction) {
-                      setState(() {
-                        messages.removeAt(index);
-                      });
-                    },
-                    child: ListTile(
-                        title: Text(message.subject),
-                        subtitle: Text(
-                          message.body,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        leading: CircleAvatar(
-                          child: Text(message.leading),
-                        ),
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      MessageDetails(
-                                          message.subject, message.body)));
-                        }),
-                  );
-                },
-                separatorBuilder: (context, index) => Divider(),
-                itemCount: messages.length)
-            : FutureBuilder(
+        body: FutureBuilder(
                 future: futureMessages,
                 // ignore: missing_return
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
