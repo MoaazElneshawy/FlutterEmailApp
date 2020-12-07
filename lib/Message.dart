@@ -30,13 +30,13 @@ class Message {
 
   static Future<List<Message>> loadMessages() async {
     // read a local json file
-    var data = await rootBundle.loadString('data/messages.json');
-    List decodedMessages = json.decode(data);
+    // var data = await rootBundle.loadString('data/messages.json');
+    // List decodedMessages = json.decode(data);
 
     // read messages from api link
-    // http.Response data = await http
-    //     .get('https://run.mocky.io/v3/357385c9-3a6a-4607-84ec-b649208be405');
-    // List decodedMessages = json.decode(data.body);
+    http.Response data = await http
+        .get('https://run.mocky.io/v3/357385c9-3a6a-4607-84ec-b649208be405');
+    List decodedMessages = json.decode(data.body);
 
     List<Message> _messages =
         decodedMessages.map((json) => Message.fromJson(json)).toList();
