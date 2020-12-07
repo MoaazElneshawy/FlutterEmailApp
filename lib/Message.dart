@@ -28,19 +28,20 @@ class Message {
   factory Message.fromJson(Map<String, dynamic> json) =>
       _$MessageFromJson(json);
 
-  static Future<List<Message>> loadMessages() async {
-    // read a local json file
-    // var data = await rootBundle.loadString('data/messages.json');
-    // List decodedMessages = json.decode(data);
+  static Future<List<Message>> loadMessages(String status) async {
+    if (status == "local") {
+      // read a local json file
+      var data = await rootBundle.loadString('data/messages.json');
+      List decodedMessages = json.decode(data);
 
-    // read messages from api link
-    http.Response data = await http
-        .get('https://run.mocky.io/v3/357385c9-3a6a-4607-84ec-b649208be405');
-    List decodedMessages = json.decode(data.body);
+      return decodedMessages.map((json) => Message.fromJson(json)).toList();
+    } else {
+      // read messages from api link
+      http.Response data = await http
+          .get('https://run.mocky.io/v3/357385c9-3a6a-4607-84ec-b649208be405');
+      List decodedMessages = json.decode(data.body);
 
-    List<Message> _messages =
-        decodedMessages.map((json) => Message.fromJson(json)).toList();
-
-    return _messages;
+      return decodedMessages.map((json) => Message.fromJson(json)).toList();
+    }
   }
 }
