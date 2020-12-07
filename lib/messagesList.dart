@@ -1,5 +1,7 @@
 import 'package:email_app/MessageDetails.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+
 import 'ComposeMessage.dart';
 import 'Message.dart';
 
@@ -12,7 +14,7 @@ class MessagesList extends StatefulWidget {
 }
 
 class _MessagesListState extends State<MessagesList> {
-  List<Message> messages = [];
+  var messages = [];
   Future futureMessages;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -40,13 +42,100 @@ class _MessagesListState extends State<MessagesList> {
             IconButton(
               icon: Icon(Icons.refresh),
               onPressed: () async {
-                var messages = await Message.loadMessages();
                 setState(() {
-                  this.messages = messages;
+                  futureMessages = Message.loadMessages();
                 });
               },
             )
           ],
+        ),
+        body: FutureBuilder(
+          future: futureMessages,
+          // ignore: missing_return
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            print(snapshot.connectionState);
+            print(snapshot.hasError);
+            messages = snapshot.data;
+            switch (snapshot.connectionState) {
+              case ConnectionState.active:
+              case ConnectionState.waiting:
+              case ConnectionState.none:
+                return Center(child: CircularProgressIndicator());
+              case ConnectionState.done:
+                {
+                  if (snapshot.hasError)
+                    return Center(
+                      child: Text('Error , ${snapshot.error}'),
+                    );
+                  else
+                    return ListView.separated(
+                        itemBuilder: (context, index) {
+                          Message message = messages[index];
+                          return Slidable(
+                            actionPane: SlidableDrawerActionPane(),
+                            actionExtentRatio: 0.25,
+                            actions: <Widget>[
+                              IconSlideAction(
+                                caption: 'Archive',
+                                color: Colors.blue,
+                                icon: Icons.archive,
+                                onTap: () {
+                                  print('Archive');
+                                },
+                              ),
+                              IconSlideAction(
+                                caption: 'Share',
+                                color: Colors.indigo,
+                                icon: Icons.share,
+                                onTap: () {
+                                  print('Share');
+                                },
+                              ),
+                            ],
+                            secondaryActions: <Widget>[
+                              IconSlideAction(
+                                caption: 'More',
+                                color: Colors.black45,
+                                icon: Icons.more_horiz,
+                                onTap: () {
+                                  print('More');
+                                },
+                              ),
+                              IconSlideAction(
+                                caption: 'Delete',
+                                color: Colors.red,
+                                icon: Icons.delete,
+                                onTap: () {
+                                  print('Delete');
+                                },
+                              ),
+                            ],
+                            child: ListTile(
+                              title: Text(message.subject),
+                              subtitle: Text(
+                                message.body,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              leading: CircleAvatar(
+                                child: Text(message.leading),
+                              ),
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            MessageDetails(message.subject,
+                                                message.body)));
+                              },
+                            ),
+                          );
+                        },
+                        separatorBuilder: (context, index) => Divider(),
+                        itemCount: messages.length);
+                }
+            }
+          },
         ),
         drawer: Drawer(
           child: Column(
@@ -92,61 +181,6 @@ class _MessagesListState extends State<MessagesList> {
             ],
           ),
         ),
-        body: ListView.separated(
-            itemBuilder: (context, index) {
-              Message message = messages[index];
-              return Dismissible(
-                direction: DismissDirection.endToStart,
-                background: Container(
-                  color: Colors.redAccent,
-                  alignment:Alignment.centerRight,
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 20),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.delete,
-                            color: Colors.white,
-                          ),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            'Delete',
-                            style: TextStyle(color: Colors.white),
-                          )
-                        ],
-                      ),
-                    ),
-                ),
-                key: UniqueKey(),
-                onDismissed: (direction) {
-                  setState(() {
-                    messages.removeAt(index);
-                  });
-                },
-                child: ListTile(
-                    title: Text(message.subject),
-                    subtitle: Text(
-                      message.body,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    leading: CircleAvatar(
-                      child: Text(message.leading),
-                    ),
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (BuildContext context) => MessageDetails(
-                                  message.subject, message.body)));
-                    }),
-              );
-            },
-            separatorBuilder: (context, index) => Divider(),
-            itemCount: messages.length),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
             Message message = await Navigator.push(
@@ -172,52 +206,3 @@ class _MessagesListState extends State<MessagesList> {
         ));
   }
 }
-
-// body: FutureBuilder(
-//   future: futureMessages,
-//   // ignore: missing_return
-//   builder: (BuildContext context, AsyncSnapshot snapshot) {
-//     print(snapshot.connectionState);
-//     print(snapshot.hasError);
-//     futureMessages = snapshot.data;
-//     switch (snapshot.connectionState) {
-//       case ConnectionState.active:
-//       case ConnectionState.waiting:
-//       case ConnectionState.none:
-//         return Center(child: CircularProgressIndicator());
-//       case ConnectionState.done:
-//         {
-//           if (snapshot.hasError)
-//             return Center(
-//               child: Text('Error , ${snapshot.error}'),
-//             );
-//           else
-//             return ListView.separated(
-//                 itemBuilder: (context, index) {
-//                   Message message = messages[index];
-//                   return ListTile(
-//                     title: Text(message.subject),
-//                     subtitle: Text(
-//                       message.body,
-//                       maxLines: 2,
-//                       overflow: TextOverflow.ellipsis,
-//                     ),
-//                     leading: CircleAvatar(
-//                       child: Text(message.leading),
-//                     ),
-//                     onTap: () {
-//                       Navigator.push(
-//                           context,
-//                           MaterialPageRoute(
-//                               builder: (BuildContext context) =>
-//                                   MessageDetails(
-//                                       message.subject, message.body)));
-//                     },
-//                   );
-//                 },
-//                 separatorBuilder: (context, index) => Divider(),
-//                 itemCount: messages.length);
-//         }
-//     }
-//   },
-// ),
