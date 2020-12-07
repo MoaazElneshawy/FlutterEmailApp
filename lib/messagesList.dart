@@ -1,6 +1,5 @@
 import 'package:email_app/MessageDetails.dart';
 import 'package:flutter/material.dart';
-
 import 'ComposeMessage.dart';
 import 'Message.dart';
 
