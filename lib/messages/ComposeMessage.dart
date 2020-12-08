@@ -1,4 +1,4 @@
-import 'package:email_app/Message.dart';
+import 'package:email_app/messages/Message.dart';
 import 'package:flutter/material.dart';
 
 class ComposeMessage extends StatefulWidget {

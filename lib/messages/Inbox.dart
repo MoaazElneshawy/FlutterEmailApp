@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'AppDrawer.dart';
+import '../root/AppDrawer.dart';
 import 'messagesList.dart';
 
 class Inbox extends StatelessWidget {

@@ -1,4 +1,4 @@
-import 'package:email_app/AppRoot.dart';
+import 'package:email_app/root/AppRoot.dart';
 import 'package:flutter/material.dart';
 
 void main() {
