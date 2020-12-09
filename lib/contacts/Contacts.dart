@@ -1,3 +1,4 @@
+import 'package:email_app/contacts/contact.dart';
 import 'package:flutter/material.dart';
 
 import '../root/AppDrawer.dart';
@@ -34,20 +35,30 @@ class _ContactsState extends State<Contacts> {
         drawer: AppDrawer(),
         body: StreamBuilder(
           stream: manager.contactsList,
-          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-            List<String> contacts = snapshot.data;
-            return snapshot.hasData
-                ? ListView.separated(
+          // ignore: missing_return
+          builder:
+              (BuildContext context, AsyncSnapshot<List<Contact>> snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.active:
+              case ConnectionState.none:
+              case ConnectionState.waiting:
+                return Center(child: CircularProgressIndicator());
+              case ConnectionState.done:
+                List<Contact> contacts = snapshot.data;
+                return ListView.separated(
                     itemBuilder: (context, index) {
+                      Contact contact = contacts[index];
                       return ListTile(
-                        title: Text(contacts[index]),
+                        title: Text(contact.name),
+                        subtitle: Text(contact.email),
+                        leading: CircleAvatar(
+                          child: Text("${contact.id}"),
+                        ),
                       );
                     },
                     separatorBuilder: (context, index) => Divider(),
-                    itemCount: contacts.length)
-                : Center(
-                    child: Text('...'),
-                  );
+                    itemCount: contacts.length);
+            }
           },
         ));
   }

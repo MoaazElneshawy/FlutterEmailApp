@@ -1,14 +1,13 @@
 import 'dart:async';
 
-List<String> contacts = ['Baba', 'Mama', 'Amr', 'Moaaz'];
+import 'package:email_app/contacts/contact.dart';
+
+// List<String> contacts = ['Baba', 'Mama', 'Amr', 'Moaaz'];
 
 class ContactsManager {
   // create contacts stream
-  Stream<List<String>> get contactsList async* {
-    for (var i = 0; i < contacts.length; i++) {
-      await Future.delayed(Duration(seconds: 1));
-      yield contacts.sublist(0, i + 1);
-    }
+  Stream<List<Contact>> get contactsList async* {
+      yield await Contact.getContacts();
   }
 
   // listen to another stream
