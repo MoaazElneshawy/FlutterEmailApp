@@ -1,5 +1,5 @@
 import 'package:email_app/calendar/Calendar.dart';
-import 'package:email_app/contacts/Contacts.dart';
+import 'package:email_app/contacts/ContactsScreen.dart';
 import 'package:email_app/messages/Inbox.dart';
 import 'package:flutter/material.dart';
 

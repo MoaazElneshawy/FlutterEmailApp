@@ -13,14 +13,22 @@ class Contact {
     this.email = json['email'];
   }
 
-  static Future<List<Contact>> getContacts() async {
+  // {query} between the parentheses means it's optional to be passed or not
+  static Future<List<Contact>> getContacts({query}) async {
     http.Response response =
         await http.get("https://jsonplaceholder.typicode.com/users");
 
-    await Future.delayed(Duration(seconds: 2));
-
     List contactsJson = json.decode(response.body);
-    print(contactsJson);
-    return contactsJson.map((json) => Contact.fromJson(json)).toList();
+
+    Iterable<Contact> contacts = contactsJson.map((json) => Contact.fromJson(json));
+
+    if (query != null && query.toString().isNotEmpty) {
+      contacts = contacts.where((element) => element
+          .name
+          .toLowerCase()
+          .contains(query.toString().toLowerCase()));
+    }
+
+    return contacts.toList();
   }
 }

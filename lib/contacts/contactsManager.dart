@@ -6,8 +6,14 @@ import 'package:email_app/contacts/contact.dart';
 
 class ContactsManager {
   // create contacts stream
+
   Stream<List<Contact>> get contactsList async* {
-      yield await Contact.getContacts();
+    yield await Contact.getContacts();
+  }
+
+  // create a stream using fromFuture method
+  Stream<List<Contact>> filteredList(String query) {
+    return Stream.fromFuture(Contact.getContacts(query: query));
   }
 
   // listen to another stream
