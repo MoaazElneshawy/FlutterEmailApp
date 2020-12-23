@@ -2,6 +2,9 @@ import 'dart:async';
 
 import 'package:email_app/contacts/contact.dart';
 
+import 'package:rxdart/rxdart.dart';
+
+
 // List<String> contacts = ['Baba', 'Mama', 'Amr', 'Moaaz'];
 
 class ContactsManager {
@@ -18,8 +21,8 @@ class ContactsManager {
 
   // listen to another stream
   // create stream controller
-  final StreamController<int> contactsCounterController =
-      StreamController<int>();
+  final BehaviorSubject<int> contactsCounterController =
+      BehaviorSubject<int>();
 
   // attach a stream to stream controller
   Stream<int> get contactsCount => contactsCounterController.stream;
