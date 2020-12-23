@@ -1,14 +1,14 @@
 import 'package:email_app/contacts/ContactsStreanBuilder.dart';
-import 'package:email_app/contacts/contactsManager.dart';
+import 'package:email_app/root/Provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'contact.dart';
 
 class ContactsSearchDelegate extends SearchDelegate {
-  final ContactsManager manager;
-
-  ContactsSearchDelegate({this.manager});
+  // final ContactsManager manager;
+  //
+  // ContactsSearchDelegate({this.manager});
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -32,6 +32,8 @@ class ContactsSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
+    var manager = Provider.of(context).manager;
+
     if (query == null || query.isEmpty) {
       return Center(
         child: Text(
