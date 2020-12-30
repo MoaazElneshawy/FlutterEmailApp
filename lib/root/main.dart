@@ -1,4 +1,5 @@
-import 'package:email_app/contacts/contactsManager.dart';
+import 'package:email_app/managers/calendarManager.dart';
+import 'package:email_app/managers/contactsManager.dart';
 import 'package:email_app/root/AppRoot.dart';
 import 'package:email_app/root/Provider.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +13,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Provider(
-      manager: ContactsManager(),
+      contactsManager: ContactsManager(),
+      calenderManager: CalendarManager(),
       child: MaterialApp(
         title: 'Email App',
         theme: ThemeData(

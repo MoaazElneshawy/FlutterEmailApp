@@ -1,10 +1,11 @@
 import 'package:email_app/contacts/ContactsSearchDelegate.dart';
 import 'package:email_app/contacts/contact.dart';
 import 'package:email_app/root/Provider.dart';
+import 'package:email_app/root/observer.dart';
 import 'package:flutter/material.dart';
 
 import '../root/AppDrawer.dart';
-import 'ContactsStreanBuilder.dart';
+import 'ContactsStreamBuilder.dart';
 
 class Contacts extends StatefulWidget {
   String title;
@@ -20,18 +21,19 @@ class _ContactsState extends State<Contacts> {
 
   @override
   Widget build(BuildContext context) {
-    var manager = Provider.of(context).manager;
+    var manager = Provider.of(context).contactsManager;
 
     return Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
           actions: [
             Chip(
-                label: StreamBuilder(
+                label: Observer<int>(
               stream: manager.contactsCount,
-              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                return Text((snapshot.data ?? 0).toString());
+              onSuccess: (BuildContext context, int data) {
+                return Text((data ?? 0).toString());
               },
+              onLoading: (context) => Text('..'),
             )),
             IconButton(
               icon: Icon(Icons.search),
