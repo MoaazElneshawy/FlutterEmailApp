@@ -1,15 +1,14 @@
 import 'package:email_app/managers/calendarManager.dart';
+import 'package:email_app/root/Provider.dart';
 import 'package:email_app/root/observer.dart';
 import 'package:flutter/material.dart';
 
 class Counter extends StatelessWidget {
-  
-  final CalendarManager manager;
-  
-  Counter({this.manager});
-  
+
   @override
   Widget build(BuildContext context) {
+    var manager = Provider.of(context).calenderManager;
+
     return Column(
       children: [
         Center(
