@@ -23,13 +23,16 @@ class _ContactsState extends State<Contacts> {
   Widget build(BuildContext context) {
     var manager = Provider.of(context).contactsManager;
 
+    // pass initial value to Sink
+    manager.filter.add('');
+
     return Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
           actions: [
             Chip(
                 label: Observer<int>(
-              stream: manager.contactsCount,
+              stream: manager.counter$,
               onSuccess: (BuildContext context, int data) {
                 return Text((data ?? 0).toString());
               },
@@ -47,7 +50,7 @@ class _ContactsState extends State<Contacts> {
         ),
         drawer: AppDrawer(),
         body: ContactsStreamBuilder(
-            stream: manager.contactsList,
+            stream: manager.contacts$,
             builder: (context, contacts) {
               return ListView.separated(
                   itemBuilder: (context, index) {

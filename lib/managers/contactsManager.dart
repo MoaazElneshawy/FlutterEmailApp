@@ -1,36 +1,35 @@
 import 'dart:async';
 
 import 'package:email_app/contacts/contact.dart';
-
 import 'package:rxdart/rxdart.dart';
 
-
-// List<String> contacts = ['Baba', 'Mama', 'Amr', 'Moaaz'];
-
 class ContactsManager {
-  // create contacts stream
 
-  Stream<List<Contact>> get contactsList async* {
-    yield await Contact.getContacts();
-  }
+  final PublishSubject<String> _filterSubject = PublishSubject(); // for coming data
+  final PublishSubject<int> _counterSubject = PublishSubject<int>();
+  final PublishSubject<List<Contact>> _contactsSubject =
+      PublishSubject<List<Contact>>(); // for outgoing data
 
-  // create a stream using fromFuture method
-  Stream<List<Contact>> filteredList(String query) {
-    return Stream.fromFuture(Contact.getContacts(query: query));
-  }
+  // Sink for Manager accepting data through it
+  Sink<String> get filter => _filterSubject.sink;
 
-  // listen to another stream
-  // create stream controller
-  final BehaviorSubject<int> contactsCounterController =
-      BehaviorSubject<int>();
+  Stream<int> get counter$ => _counterSubject.stream;
 
-  // attach a stream to stream controller
-  Stream<int> get contactsCount => contactsCounterController.stream;
+  Stream<List<Contact>> get contacts$ => _contactsSubject.stream;
 
   ContactsManager() {
-    // listen to a stream via stream controller
-    contactsList.listen((list) {
-      contactsCounterController.add(list.length);
+    _filterSubject.stream.listen((query) async {
+      var contacts = await Contact.getContacts(query: query);
+      _contactsSubject.add(contacts);
     });
+
+    _contactsSubject.listen((value) {
+      _counterSubject.add(value.length);
+    });
+  }
+  
+  void dispose(){
+    _counterSubject.close();
+    _filterSubject.close();
   }
 }

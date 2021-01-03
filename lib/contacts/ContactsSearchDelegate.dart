@@ -33,6 +33,7 @@ class ContactsSearchDelegate extends SearchDelegate {
   @override
   Widget buildResults(BuildContext context) {
     var manager = Provider.of(context).contactsManager;
+    manager.filter.add(query);
 
     if (query == null || query.isEmpty) {
       return Center(
@@ -48,7 +49,7 @@ class ContactsSearchDelegate extends SearchDelegate {
       );
     } else {
       return ContactsStreamBuilder(
-          stream: manager.filteredList(query),
+          stream: manager.contacts$,
           builder: (context, contacts) {
             return ListView.separated(
                 itemBuilder: (context, index) {
