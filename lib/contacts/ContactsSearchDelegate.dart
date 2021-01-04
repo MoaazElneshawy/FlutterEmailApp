@@ -1,9 +1,8 @@
 import 'package:email_app/contacts/ContactsStreamBuilder.dart';
+import 'package:email_app/contacts/contact.dart';
 import 'package:email_app/root/Provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import 'contact.dart';
 
 class ContactsSearchDelegate extends SearchDelegate {
   // final ContactsManager manager;
@@ -32,28 +31,22 @@ class ContactsSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
+    return Container();
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
     var manager = Provider.of(context).contactsManager;
     manager.filter.add(query);
 
-    if (query == null || query.isEmpty) {
-      return Center(
-        child: Text(
-          'write your search ...',
-          style: TextStyle(fontStyle: FontStyle.italic),
-        ),
-      );
-    } else if (query.length < 3) {
-      return Center(
-        child: Text('search keyword at least 3 characters',
-            style: TextStyle(fontWeight: FontWeight.bold)),
-      );
-    } else {
-      return ContactsStreamBuilder(
-          stream: manager.contacts$,
-          builder: (context, contacts) {
+    return ContactsStreamBuilder(
+        stream: manager.contacts$,
+        builder: (context, contacts) {
+          List<Contact> contactsList = contacts;
+          if (contactsList.length > 0) {
             return ListView.separated(
                 itemBuilder: (context, index) {
-                  Contact contact = contacts[index];
+                  Contact contact = contactsList[index];
                   return ListTile(
                     title: Text(contact.name),
                     subtitle: Text(contact.email),
@@ -64,12 +57,8 @@ class ContactsSearchDelegate extends SearchDelegate {
                 },
                 separatorBuilder: (context, index) => Divider(),
                 itemCount: contacts.length);
-          });
-    }
-  }
-
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    return Container();
+          } else
+            return Text('No results match $query');
+        });
   }
 }
